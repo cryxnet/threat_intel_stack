@@ -337,6 +337,139 @@ services:
     depends_on:
       - opencti
 
+    connector-alienvault:
+      image: opencti/connector-alienvault:5.7.6
+      environment:
+        - OPENCTI_URL=${OPENCTI_CONNECTOR_URL}
+        - OPENCTI_TOKEN=${OPENCTI_ADMIN_TOKEN}
+        - CONNECTOR_ID=1b203031-e05e-4486-8991-82eff7295f8b
+        - CONNECTOR_TYPE=EXTERNAL_IMPORT
+        - CONNECTOR_NAME=AlienVault
+        - CONNECTOR_SCOPE=alienvault
+        - CONNECTOR_CONFIDENCE_LEVEL=15 # From 0 (Unknown) to 100 (Fully trusted)
+        - CONNECTOR_UPDATE_EXISTING_DATA=false
+        - CONNECTOR_LOG_LEVEL=info
+        - ALIENVAULT_BASE_URL=https://otx.alienvault.com
+        - ALIENVAULT_API_KEY=${ALIENVAULT_API_KEY}
+        - ALIENVAULT_TLP=White
+        - ALIENVAULT_CREATE_OBSERVABLES=true
+        - ALIENVAULT_CREATE_INDICATORS=true
+        - ALIENVAULT_PULSE_START_TIMESTAMP=2020-05-01T00:00:00 # BEWARE! Could be a lot of pulses!
+        - ALIENVAULT_REPORT_TYPE=threat-report
+        - ALIENVAULT_REPORT_STATUS=New
+        - ALIENVAULT_GUESS_MALWARE=false # Use tags to guess malware.
+        - ALIENVAULT_GUESS_CVE=false # Use tags to guess CVE.
+        - ALIENVAULT_EXCLUDED_PULSE_INDICATOR_TYPES=FileHash-MD5,FileHash-SHA1 # Excluded Pulse indicator types.
+        - ALIENVAULT_ENABLE_RELATIONSHIPS=true # Enable/Disable relationship creation between SDOs.
+        - ALIENVAULT_ENABLE_ATTACK_PATTERNS_INDICATES=true # Enable/Disable "indicates" relationships between indicators and attack patterns
+        - ALIENVAULT_INTERVAL_SEC=1800
+      restart: always
+
+  connector-abuseipdb-ipblacklist:
+    image: opencti/connector-abuseipdb-ipblacklist:5.7.6
+    environment:
+      - OPENCTI_URL=${OPENCTI_CONNECTOR_URL}
+      - OPENCTI_TOKEN=${OPENCTI_ADMIN_TOKEN}
+      - CONNECTOR_ID=b7a144e0-ef19-4a93-a51d-677c4549f034 # Valid UUIDv4
+      - CONNECTOR_TYPE=EXTERNAL_IMPORT
+      - "CONNECTOR_NAME=AbuseIPDB IP Blacklist"
+      - CONNECTOR_SCOPE=abuseipdb
+      - CONNECTOR_CONFIDENCE_LEVEL=100 # From 0 (Unknown) to 100 (Fully trusted)
+      - CONNECTOR_LOG_LEVEL=info
+      - ABUSEIPDB_URL=https://api.abuseipdb.com/api/v2/blacklist
+      - ABUSEIPDB_API_KEY=${ABUSEIPDB_API_KEY}
+      - ABUSEIPDB_SCORE=100
+      - ABUSEIPDB_LIMIT=10000
+      - ABUSEIPDB_INTERVAL=2 #Day
+    restart: always
+
+  connector-cybercrimetracker:
+    image: opencti/connector-cybercrime-tracker:5.7.6
+    environment:
+      - OPENCTI_URL=${OPENCTI_CONNECTOR_URL}
+      - OPENCTI_TOKEN=${OPENCTI_ADMIN_TOKEN}
+      - CONNECTOR_ID=bec171a8-0e84-4285-b7ba-1b82c6214883
+      - CONNECTOR_TYPE=EXTERNAL_IMPORT
+      - CONNECTOR_NAME=Cybercrime-Tracker
+      - CONNECTOR_SCOPE=cybercrime-tracker
+      - CONNECTOR_CONFIDENCE_LEVEL=15 # From 0 (Unknown) to 100 (Fully trusted)
+      - CONNECTOR_UPDATE_EXISTING_DATA=false
+      - CONNECTOR_LOG_LEVEL=info
+      - CYBERCRIME_TRACKER_FEED_URL=http://cybercrime-tracker.net/rss.xml
+      - CYBERCRIME_TRACKER_TLP=CLEAR
+      - CYBERCRIME_TRACKER_INTERVAL=86400
+      - CYBERCRIME_TRACKER_CREATE_INDICATORS=true
+      - CYBERCRIME_TRACKER_CREATE_OBSERVABLES=true
+
+  connector-disarm-framework:
+    image: opencti/connector-disarm-framework:5.7.6
+    environment:
+      - OPENCTI_URL=${OPENCTI_CONNECTOR_URL}
+      - OPENCTI_TOKEN=${OPENCTI_ADMIN_TOKEN}
+      - CONNECTOR_ID=004eba62-81f3-4eeb-8f6d-cc6e4a6b3caf
+      - CONNECTOR_TYPE=EXTERNAL_IMPORT
+      - "CONNECTOR_NAME=DISARM Framework"
+      - CONNECTOR_SCOPE=marking-definition,identity,attack-pattern,course-of-action,intrusion-set,campaign,malware,tool,report,narrative,event,channel
+      - CONNECTOR_CONFIDENCE_LEVEL=75 # From 0 (Unknown) to 100 (Fully trusted)
+      - CONNECTOR_UPDATE_EXISTING_DATA=false
+      - CONNECTOR_RUN_AND_TERMINATE=false
+      - CONNECTOR_LOG_LEVEL=info
+      - DISARM_FRAMEWORK_URL=https://raw.githubusercontent.com/DISARMFoundation/DISARMframeworks/main/generated_files/DISARM_STIX/DISARM.json
+      - DISARM_FRAMEWORK_INTERVAL=7 # In days, must be strictly greater than 1
+
+  connector-malpedia:
+    image: opencti/connector-malpedia:5.7.6
+    environment:
+      - OPENCTI_URL=${OPENCTI_CONNECTOR_URL}
+      - OPENCTI_TOKEN=${OPENCTI_ADMIN_TOKEN}
+      - CONNECTOR_ID=7584cf4c-f7b1-4461-ad3d-d72763d409bd
+      - CONNECTOR_TYPE=EXTERNAL_IMPORT
+      - CONNECTOR_NAME=Malpedia
+      - CONNECTOR_SCOPE=malpedia
+      - CONNECTOR_CONFIDENCE_LEVEL=30 # From 0 (Unknown) to 100 (Fully trusted)
+      - CONNECTOR_UPDATE_EXISTING_DATA=false
+      - CONNECTOR_LOG_LEVEL=info
+      - MALPEDIA_AUTH_KEY=${MALPEDIA_AUTH_KEY} # Empty key only fetches TLP:WHITE information
+      - MALPEDIA_INTERVAL_SEC=86400 # Run once every day
+      - MALPEDIA_IMPORT_INTRUSION_SETS=false
+      - MALPEDIA_IMPORT_YARA=true
+      - MALPEDIA_CREATE_INDICATORS=true
+      - MALPEDIA_CREATE_OBSERVABLES=true
+
+  connector-maltiverse:
+    image: opencti/connector-maltiverse:5.7.6
+    environment:
+      - OPENCTI_URL=${OPENCTI_CONNECTOR_URL}
+      - OPENCTI_TOKEN=${OPENCTI_ADMIN_TOKEN}
+      - CONNECTOR_ID=7fa1d7a7-b5cb-48e9-87b5-b7722d1958aa
+      - CONNECTOR_TYPE=EXTERNAL_IMPORT
+      - CONNECTOR_NAME=MALTIVERSE
+      - CONNECTOR_SCOPE=ipv4-addr,ipv6-addr,vulnerability,domain,url,file-sha256,file-md5,file-sha1 # MIME type or Stix Object
+      - CONNECTOR_CONFIDENCE_LEVEL=50 # From 0 (Unknown) to 100 (Fully trusted)
+      - CONNECTOR_LOG_LEVEL=info
+      - MALTIVERSE_USER=${MALTIVERSE_USER} # Username from Maltiverse
+      - MALTIVERSE_PASSWD=${MALTIVERSE_PASSWD} # PAssword for the user provided
+      #- MALTIVERSE_FEEDS=VdhZV34B4jHUXfKt_gDi # Your feeds selection between commas
+      - MALTIVERSE_POLL_INTERVAL=4 # in hours!
+
+  connector-malware-bazaar-recent-additions:
+    image: opencti/connector-malwarebazaar-recent-additions:5.7.6
+    environment:
+      - OPENCTI_URL=${OPENCTI_CONNECTOR_URL}
+      - OPENCTI_TOKEN=${OPENCTI_ADMIN_TOKEN}
+      - CONNECTOR_ID=8df469f2-afbe-4590-885f-6062b3e4f5e6
+      - CONNECTOR_TYPE=EXTERNAL_IMPORT
+      - "CONNECTOR_NAME=MalwareBazaar Recent Additions"
+      - CONNECTOR_CONFIDENCE_LEVEL=50 # From 0 (Unknown) to 100 (Fully trusted)
+      - CONNECTOR_UPDATE_EXISTING_DATA=false
+      - CONNECTOR_LOG_LEVEL=info
+      - MALWAREBAZAAR_RECENT_ADDITIONS_API_URL=https://mb-api.abuse.ch/api/v1/
+      - MALWAREBAZAAR_RECENT_ADDITIONS_COOLDOWN_SECONDS=300 # Time to wait in seconds between subsequent requests
+      - MALWAREBAZAAR_RECENT_ADDITIONS_INCLUDE_TAGS=exe,dll,docm,docx,doc,xls,xlsx,xlsm,js # (Optional) Only download files if any tag matches. (Comma separated)
+      - MALWAREBAZAAR_RECENT_ADDITIONS_INCLUDE_REPORTERS= # (Optional) Only download files uploaded by these reporters. (Comma separated)
+      - MALWAREBAZAAR_RECENT_ADDITIONS_LABELS=malware-bazar # (Optional) Labels to apply to uploaded Artifacts. (Comma separated)
+      - MALWAREBAZAAR_RECENT_ADDITIONS_LABELS_COLOR=#54483b # Color to use for labels
+
 volumes:
   esdata:
   s3data:
