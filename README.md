@@ -29,14 +29,6 @@
 | Maltiverse                      |             | username password acc | implemented     |
 | malware-bazaar-recent-additions |             | nothing               | implemented     |
 
-## ThreatNote
-
-- Null
-
-## Yeti Platform
-
-- Null
-
 ## Services to add
 
 - https://threatnote.io/
